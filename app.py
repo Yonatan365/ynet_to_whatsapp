@@ -26,11 +26,11 @@ def send_whatsapp():
         local_tz = timezone("Asia/Jerusalem")
         naive_datetime = dt.strptime(datetime, "%a, %d %b %Y %H:%M:%S %z")
         local_datetime = naive_datetime.astimezone(local_tz)
-        datetime = local_datetime.strftime("%H:%M")
+        pub_time = local_datetime.strftime("%H:%M")
     else:
         datetime = "Unknown time"
 
-    message_body = f"ynet: {title}"
+    message_body = f"{pub_time}: {title}"
 
     url = f"https://api.twilio.com/2010-04-01/Accounts/{TWILIO_ACCOUNT_SID}/Messages.json"
 
