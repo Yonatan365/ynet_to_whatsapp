@@ -16,9 +16,9 @@ def send_whatsapp():
     print(data)
 
     title = data.get("title")
-    link = data.get("link")
+    link = data.get("link", "")
 
-    message_body = f"📰 New Headline: {title}\n{link}"
+    message_body = f"ynet: {title}"
 
     url = f"https://api.twilio.com/2010-04-01/Accounts/{TWILIO_ACCOUNT_SID}/Messages.json"
 
