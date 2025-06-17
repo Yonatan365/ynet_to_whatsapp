@@ -16,7 +16,19 @@ def send_whatsapp():
     print(data)
 
     title = data.get("title")
-    link = data.get("link", "")
+    datetime = data.get("pub_date", "")
+
+    # convert datetime in the format: "Mon, 16 Jun 2025 22:11:51 +0300" to only local time
+    if datetime:
+        from datetime import datetime as dt
+        from pytz import timezone
+
+        local_tz = timezone("Asia/Jerusalem")
+        naive_datetime = dt.strptime(datetime, "%a, %d %b %Y %H:%M:%S %z")
+        local_datetime = naive_datetime.astimezone(local_tz)
+        datetime = local_datetime.strftime("%H:%M")
+    else:
+        datetime = "Unknown time"
 
     message_body = f"ynet: {title}"
 
