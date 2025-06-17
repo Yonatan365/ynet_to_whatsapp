@@ -13,6 +13,7 @@ TWILIO_WHATSAPP_NUMBER = "whatsapp:+14155238886"
 @app.route('/send', methods=['POST'])
 def send_whatsapp():
     data = request.json
+    print(data)
 
     title = data.get("title")
     link = data.get("link")
