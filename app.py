@@ -13,22 +13,25 @@ TWILIO_WHATSAPP_NUMBER = "whatsapp:+14155238886"
 @app.route('/send', methods=['POST'])
 def send_whatsapp():
     data = request.json
-    print(data)
 
-    title = data.get("title")
-    datetime = data.get("pub_date", "")
+    title = data.get("title", "")
+    pub_date_raw = data.get("pub_date", "")
 
-    # convert datetime in the format: "Mon, 16 Jun 2025 22:11:51 +0300" to only local time
-    if datetime:
-        from datetime import datetime as dt
-        from pytz import timezone
+    pub_time = "Unknown time"
 
-        local_tz = timezone("Asia/Jerusalem")
-        naive_datetime = dt.strptime(datetime, "%a, %d %b %Y %H:%M:%S %z")
-        local_datetime = naive_datetime.astimezone(local_tz)
-        pub_time = local_datetime.strftime("%H:%M")
-    else:
-        datetime = "Unknown time"
+    if pub_date_raw:
+        try:
+            # Regex to extract HH:MM from string like "Mon, 16 Jun 2025 22:11:51 +0300"
+            match = re.search(r"\b(\d{2}):(\d{2}):\d{2}\b", pub_date_raw)
+            if match:
+                hour = match.group(1)
+                minute = match.group(2)
+                pub_time = f"{hour}:{minute}"
+            else:
+                pub_time = "Unknown time"
+        except Exception as e:
+            print("Regex parse error:", e)
+            pub_time = "Bad date format"
 
     message_body = f"{pub_time}: {title}"
 
@@ -46,7 +49,7 @@ def send_whatsapp():
         return jsonify({"status": "sent"}), 200
     else:
         return jsonify({"error": resp.text}), 400
-
+    
 @app.route('/')
 def hello():
     return "Webhook running."
